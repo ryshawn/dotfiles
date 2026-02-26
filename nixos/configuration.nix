@@ -11,6 +11,7 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      <nixos-unstable/nixos/modules/programs/wayland/dms-shell.nix>
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -39,6 +40,11 @@ in
 
   zramSwap.enable = true;
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [
+    (final: prev: {
+      dgop = unstable.dgop;
+    })
+  ];
 
   hardware.cpu.intel.updateMicrocode = true;
   hardware.graphics.enable = true;
@@ -65,6 +71,17 @@ in
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   programs.niri.enable = true;
+  programs.dms-shell = {
+    enable = true;
+    package = unstable.dms-shell;
+    quickshell.package = unstable.quickshell;
+    enableSystemMonitoring = true;
+    enableVPN = true;
+    enableDynamicTheming = true;
+    enableAudioWavelength = true;
+    enableCalendarEvents = true;
+    enableClipboardPaste = true;
+  };
   services.displayManager.ly.enable = true;
 
   # rtkit (optional, recommended) allows Pipewire to use the realtime scheduler for increased performance.
@@ -74,23 +91,6 @@ in
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-  };
-
-  programs.waybar.enable = true;
-  fonts = {
-    packages = with pkgs; [
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-color-emoji
-      font-awesome
-      nerd-fonts.jetbrains-mono
-    ];
-
-    fontconfig.defaultFonts = {
-      sansSerif = [ "Noto Sans" "Font Awesome 6 Free" ];
-      monospace = [ "JetBrainsMono Nerd Font" ];
-      emoji = [ "Noto Color Emoji" ];
-    };
   };
   
 
