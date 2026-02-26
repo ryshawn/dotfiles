@@ -11,7 +11,6 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      (<nixos-unstable> + "/nixos/modules/programs/wayland/dms-shell.nix")
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -54,7 +53,6 @@ in
   };
 
   programs.firefox.enable = true;
-  programs.dms-shell.enable = true;
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
