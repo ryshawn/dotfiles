@@ -1,0 +1,41 @@
+* {
+  border: none;
+  border-radius: 0;
+  font-family: "JetBrainsMono Nerd Font", "Noto Sans", "Font Awesome 6 Free";
+  font-size: 12px;
+  min-height: 0;
+}
+
+window#waybar {
+  background: rgba(30, 30, 46, 0.90);
+  color: #cdd6f4;
+}
+
+#clock,
+#cpu,
+#memory,
+#network,
+#pulseaudio,
+#battery,
+#tray {
+  background: rgba(49, 50, 68, 0.85);
+  margin: 4px 2px;
+  padding: 0 10px;
+  border-radius: 8px;
+}
+
+#battery.warning {
+  color: #f9e2af;
+}
+
+#battery.critical {
+  color: #f38ba8;
+}
+
+#battery.charging {
+  color: #a6e3a1;
+}
+
+#pulseaudio.muted {
+  color: #f38ba8;
+}

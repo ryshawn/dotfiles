@@ -1,0 +1,55 @@
+[
+  {
+    "layer": "top",
+    "position": "top",
+    "height": 32,
+    "spacing": 8,
+
+    "modules-left": ["clock"],
+    "modules-center": ["cpu", "memory"],
+    "modules-right": ["network", "pulseaudio", "battery", "tray"],
+
+    "clock": {
+      "format": "  {:%H:%M    %d/%m/%Y}",
+      "tooltip-format": "{:%A, %d/%m/%Y}"
+    },
+
+    "cpu": {
+      "format": "  {usage}%"
+    },
+
+    "memory": {
+      "format": "  {}%"
+    },
+
+    "network": {
+      "format-wifi": "  {essid} ({signalStrength}%)",
+      "format-ethernet": "  {ipaddr}",
+      "format-disconnected": "󰖪  offline",
+      "tooltip-format": "{ifname} via {gwaddr}"
+    },
+
+    "pulseaudio": {
+      "format": "{icon}  {volume}%",
+      "format-muted": "󰝟  mute",
+      "format-icons": {
+        "default": ["", "", ""]
+      }
+    },
+
+    "battery": {
+      "states": {
+        "warning": 30,
+        "critical": 15
+      },
+      "format": "{icon}  {capacity}%",
+      "format-charging": "  {capacity}%",
+      "format-plugged": "  {capacity}%",
+      "format-icons": ["", "", "", "", ""]
+    },
+
+    "tray": {
+      "spacing": 10
+    }
+  }
+]
