@@ -43,9 +43,8 @@ in
   hardware.cpu.intel.updateMicrocode = true;
   hardware.graphics.enable = true;
   hardware.bluetooth.enable = true;
-  virtualisations.docker.enable = true; 
+  virtualisation.docker.enable = true; 
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.admilson = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "docker" ]; # Enable ‘sudo’ for the user.
@@ -55,8 +54,6 @@ in
 
   programs.firefox.enable = true;
 
-  # List packages installed in system profile.
-  # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
     unstable.vscode
     github-desktop
