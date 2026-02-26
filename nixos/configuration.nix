@@ -43,11 +43,12 @@ in
   hardware.cpu.intel.updateMicrocode = true;
   hardware.graphics.enable = true;
   hardware.bluetooth.enable = true;
+  virtualisations.docker.enable = true; 
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.admilson = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "docker" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
     ];
   };
