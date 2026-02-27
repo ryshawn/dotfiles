@@ -26,10 +26,6 @@ in
   # Set your time zone.
   time.timeZone = "America/Manaus";
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
   # Select internationalisation properties.
   i18n.defaultLocale = "pt_BR.UTF-8";
   console.keyMap = "br-abnt2";
@@ -37,6 +33,7 @@ in
   # Configure keymap in X11
   services.xserver.xkb.layout = "br";
   services.xserver.xkb.variant = "abnt2";
+  services.upower.enable = true;
 
   zramSwap.enable = true;
   nixpkgs.config.allowUnfree = true;
@@ -49,7 +46,6 @@ in
   hardware.cpu.intel.updateMicrocode = true;
   hardware.graphics.enable = true;
   hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
   virtualisation.docker.enable = true; 
 
   users.users.admilson = {
@@ -65,29 +61,9 @@ in
   environment.systemPackages = with pkgs; [
     unstable.vscode
     github-desktop
-    fuzzel
     alacritty
     git
-    nautilus
-    loupe
-    graphite-cursors
   ];
-
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-
-  xdg.mime.enable = true;
-  xdg.mime.defaultApplications = {
-    "image/jpeg" = [ "org.gnome.Loupe.desktop" ];
-    "image/png" = [ "org.gnome.Loupe.desktop" ];
-    "image/gif" = [ "org.gnome.Loupe.desktop" ];
-    "image/webp" = [ "org.gnome.Loupe.desktop" ];
-    "image/bmp" = [ "org.gnome.Loupe.desktop" ];
-    "image/tiff" = [ "org.gnome.Loupe.desktop" ];
-    "image/avif" = [ "org.gnome.Loupe.desktop" ];
-    "image/heif" = [ "org.gnome.Loupe.desktop" ];
-    "image/heic" = [ "org.gnome.Loupe.desktop" ];
-    "image/svg+xml" = [ "org.gnome.Loupe.desktop" ];
-  };
 
   programs.niri.enable = true;
   programs.niri.useNautilus = true;
@@ -95,14 +71,7 @@ in
     enable = true;
     package = unstable.dms-shell;
     quickshell.package = unstable.quickshell;
-    enableSystemMonitoring = true;
-    enableVPN = true;
-    enableDynamicTheming = true;
-    enableAudioWavelength = true;
-    enableCalendarEvents = true;
-    enableClipboardPaste = true;
   };
-  services.displayManager.ly.enable = true;
 
   # rtkit (optional, recommended) allows Pipewire to use the realtime scheduler for increased performance.
   security.rtkit.enable = true;
@@ -112,7 +81,8 @@ in
     alsa.support32Bit = true;
     pulse.enable = true;
   };
-  
+
+  services.displayManager.gdm.enable = true;
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
