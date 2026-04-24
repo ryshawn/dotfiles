@@ -14,29 +14,56 @@ in
       <nixos-unstable/nixos/modules/programs/wayland/dms-shell.nix>
     ];
 
-  # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  boot = {
+
+    plymouth = {
+      enable = true;
+      theme = "rings";
+      themePackages = with pkgs; [
+        # By default we would install all themes
+        (adi1090x-plymouth-themes.override {
+          selected_themes = [ "rings" ];
+        })
+      ];
+    };
+
+    consoleLogLevel = 3;
+    initrd.verbose = false;
+    kernelParams = [
+      "quiet"
+      "udev.log_level=3"
+      "systemd.show_status=auto"
+    ];
+
+    loader.timeout = 0;
+
+  };
+
   networking.hostName = "nixos"; # Define your hostname.
 
-  # Configure network connections interactively with nmcli or nmtui.
   networking.networkmanager.enable = true;
+  networking.networkmanager.plugins = with pkgs; [
+    networkmanager-openvpn
+  ];
 
-  # Set your time zone.
   time.timeZone = "America/Manaus";
 
-  # Select internationalisation properties.
   i18n.defaultLocale = "pt_BR.UTF-8";
-  console.keyMap = "br-abnt2";
+  console.keyMap = "br-abnt2"; 
 
-  # Configure keymap in X11
   services.xserver.xkb.layout = "br";
   services.xserver.xkb.variant = "abnt2";
-  services.upower.enable = true;
+
 
   zramSwap.enable = true;
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [
+    "beekeeper-studio-5.3.4"
+  ];
+
   nixpkgs.overlays = [
     (final: prev: {
       dgop = unstable.dgop;
@@ -45,8 +72,16 @@ in
 
   hardware.cpu.intel.updateMicrocode = true;
   hardware.graphics.enable = true;
-  hardware.bluetooth.enable = true;
-  virtualisation.docker.enable = true; 
+  hardware.bluetooth.enable = true; 
+  virtualisation.docker.enable = true;
+  services.upower.enable = true;
+  services.thermald.enable = true;
+  services.fstrim.enable = true;
+  services.logind = {
+    lidSwitch = "ignore";
+    lidSwitchExternalPower = "ignore";
+    lidSwitchDocked = "ignore";
+  };
 
   users.users.admilson = {
     isNormalUser = true;
@@ -56,57 +91,73 @@ in
   };
 
   programs.firefox.enable = true;
-
-  services.printing.enable = true;
-  environment.systemPackages = with pkgs; [
-    unstable.vscode
-    github-desktop
-    alacritty
-    git
-  ];
-
+  programs.thunderbird.enable = true;
+  programs.localsend.enable = true;
   programs.niri.enable = true;
   programs.niri.useNautilus = true;
+
   programs.dms-shell = {
     enable = true;
     package = unstable.dms-shell;
     quickshell.package = unstable.quickshell;
   };
 
-  # rtkit (optional, recommended) allows Pipewire to use the realtime scheduler for increased performance.
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+    config.common.default = "*";
+  };
+
+  # List packages installed in system profile.
+  # You can use https://search.nixos.org/ to find more packages (and options).
+  environment.systemPackages = with pkgs; [
+    git
+    github-desktop
+    alacritty
+    nautilus
+    adwaita-icon-theme
+    graphite-cursors
+    loupe
+    evince
+    discord
+    unstable.vscode
+    xwayland-satellite
+    gnome-connections
+    file-roller
+    (python3.withPackages(ps: with ps; [ tkinter requests pandas ]))
+    beekeeper-studio
+    onlyoffice-desktopeditors
+    deskflow
+  ];
+
+  xdg.mime.defaultApplications = {
+    "application/pdf" = [ "org.gnome.Evince.desktop" ];
+  };
+
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    XDG_DATA_DIRS = lib.mkDefault "/run/current-system/sw/share";
+  };
+
   security.rtkit.enable = true;
   services.pipewire = {
-    enable = true; # if not already enabled
+    enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
   };
 
-  services.displayManager.gdm.enable = true;
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
 
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
+  nix.settings.auto-optimise-store = true;
 
-  # This option defines the first version of NixOS you have installed on this particular machine,
-  # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
-  #
-  # Most users should NEVER change this value after the initial install, for any reason,
-  # even if you've upgraded your system to a new NixOS release.
-  #
-  # This value does NOT affect the Nixpkgs version your packages and OS are pulled from,
-  # so changing it will NOT upgrade your system - see https://nixos.org/manual/nixos/stable/#sec-upgrading for how
-  # to actually do that.
-  #
-  # This value being lower than the current NixOS release does NOT mean your system is
-  # out of date, out of support, or vulnerable.
-  #
-  # Do NOT change this value unless you have manually inspected all the changes it would make to your configuration,
-  # and migrated your data accordingly.
-  #
-  # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "25.11"; # Did you read the comment?
+  services.displayManager.ly.enable = true;
+
+  system.stateVersion = "25.11";
 
 }
 
